@@ -128,3 +128,5 @@ dmypy.json
 .DS_Store
 /organised_dataset
 /organised_dataset_resized
+/organised_dataset_resized_cut
+/output
