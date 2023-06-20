@@ -1,2 +1,6 @@
 numpy==1.23.5
 opencv-python
+insightface
+onnxruntime
+cython
+matplotlib
