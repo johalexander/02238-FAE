@@ -1,3 +1,13 @@
+# Code adapted from https://github.com/memsb/FaceDetection
+# - Pixelate
+# - Blur
+#
+# Extending the anonymisation techniques with additional blurring options
+# available from https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html
+# - Bilateral
+# - Gaussian
+# - Median
+
 import cv2
 import numpy as np
 

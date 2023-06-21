@@ -27,7 +27,7 @@ save_output = args.save
 plot = args.plot
 targets = args.tags.split(',')
 
-start = time.time()
+start_time = time.time()
 shutil.rmtree(output_path + '/output', ignore_errors=True)
 pathlib.Path(output_path + '/output').mkdir(exist_ok=True)
 
@@ -46,7 +46,7 @@ def extract_face_scores(database_dir):
     face_labels = []
     face_tag = []
 
-    model = insightface.app.FaceAnalysis(providers=['CPUExecutionProvider'], rcond=None)
+    model = insightface.app.FaceAnalysis(providers=['CPUExecutionProvider'])
     model.prepare(ctx_id=0, det_size=(128, 128))
 
     for label in skip_hidden_and_sort_dir(database_dir):
@@ -81,7 +81,7 @@ scores, labels, tags = extract_face_scores(input_path)
 #print("Tags: {}".format(tags))
 
 if save_output:
-    print("Saving output in [/output]")
+    print("Saving scores in [/output]")
 
     embeddings = np.stack(scores)
     similarity_matrix = cosine_similarity(scores)
@@ -178,6 +178,6 @@ if plot:
 
     plt.show()
 
-end = time.time()
+end_time = time.time()
 print("Finished extracting scores after elapsed time ({} seconds)"
-      .format((end - start)))
+      .format((end_time - start_time)))
