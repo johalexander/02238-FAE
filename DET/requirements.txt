@@ -7,3 +7,4 @@ numpy>=1.18.5
 pandas>=1.1.2
 scipy>=1.5.2
 seaborn>=0.11.0
+scikit-learn

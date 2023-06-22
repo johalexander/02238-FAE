@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dir', help='Input directory', required=True)
 parser.add_argument('--output', help='Output directory', required=True)
 parser.add_argument('--tag', help='Tag to associate to', default="original", choices=["original", "blur", "gaussian", "median", "bilateral", "pixelate"])
-parser.add_argument('--resize', help='Input directory', choices=["yes", "no"], default="no")
+parser.add_argument('--resize', help='Resize images', action=argparse.BooleanOptionalAction)
 
 args = parser.parse_args()
 
@@ -27,7 +27,7 @@ start = time.time()
 count_dict = defaultdict(int)
 for file in image_file_paths:
     image = cv2.imread(file)
-    if resize == "yes":
+    if resize:
         resized = cv2.resize(image, (112, 112), interpolation=cv2.INTER_AREA)
     else:
         resized = image

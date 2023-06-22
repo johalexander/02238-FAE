@@ -6,8 +6,6 @@ import numpy as np
 import time
 import pathlib
 import shutil
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 from sklearn.metrics.pairwise import cosine_similarity
 
 parser = argparse.ArgumentParser()
@@ -15,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dir', help='Input directory', required=True)
 parser.add_argument('--output', help='Output directory', required=True)
 parser.add_argument('--save', help='Save output', action=argparse.BooleanOptionalAction)
-parser.add_argument('--plot', help='Should plot', action=argparse.BooleanOptionalAction)
+parser.add_argument('--plot', help='Save plot data', action=argparse.BooleanOptionalAction)
 parser.add_argument('--tags', help='Tag to associate to', default="original")
 # "original,blur,gaussian,median,bilateral,pixelate"
 
@@ -24,7 +22,7 @@ args = parser.parse_args()
 input_path = args.dir
 output_path = args.output
 save_output = args.save
-plot = args.plot
+save_plot_data = args.plot
 targets = args.tags.split(',')
 
 start_time = time.time()
@@ -83,11 +81,6 @@ scores, labels, tags = extract_face_scores(input_path)
 if save_output:
     print("Saving scores in [/output]")
 
-    embeddings = np.stack(scores)
-    similarity_matrix = cosine_similarity(scores)
-    similarity_scores = similarity_matrix[np.triu_indices(len(embeddings), k=1)]
-    np.save(output_path + '/output/' + 'embeddings.npy', similarity_scores)
-
     # Saving these files takes a lot of memory management
     # Batching the saving seems to alleviate some of the memory hangs
 
@@ -139,44 +132,10 @@ if save_output:
     np.save(output_path + '/output/' + 'non_mated.npy', similarity_scores)
 
 
-if plot:
-    similarity_matrix = cosine_similarity(scores)
-    fig, ax = plt.subplots()
+if save_plot_data:
+    print("Saving plot data in [/output]")
 
-    im = ax.imshow(similarity_matrix, cmap='hot')
-    norm = mcolors.Normalize(vmin=similarity_matrix.min(), vmax=similarity_matrix.max())
-
-    for i in range(similarity_matrix.shape[0]):
-        for j in range(similarity_matrix.shape[1]):
-            text_color = 'white' if norm(similarity_matrix[i, j]) < 0.5 else 'black'
-            text = ax.text(j, i, '{:.2f}'.format((similarity_matrix[i, j])),
-                           ha='center', va='center', color=text_color, fontsize=4)
-
-    cbar = ax.figure.colorbar(im, ax=ax)
-
-    ax.set_xlabel('Image Index')
-    ax.set_ylabel('Image Index')
-    ax.set_title('Similarity Score Matrix')
-
-    unique_tag = np.unique(tags)
-    tag_groups = {tag: [] for tag in tags}
-
-    for i, tag in enumerate(tags):
-        tag_groups[tag].append(i)
-
-    color_map = {'original': 'blue', 'blur': 'red', 'median': 'magenta', 'bilateral': 'pink', 'gaussian': 'purple', 'pixelate': 'green'}
-
-    for t, indices in tag_groups.items():
-        if indices:
-            color_tags = [tags[i] for i in indices]
-
-            for idx, tag in zip(indices, color_tags):
-                rect = plt.Rectangle((idx - 0.5, idx - 0.5),
-                                     1, 1,
-                                     fill=False, edgecolor=color_map[tag], linewidth=2)
-                ax.add_patch(rect)
-
-    plt.show()
+    np.save(output_path + '/output/' + 'plot_scores.npy', scores)
 
 end_time = time.time()
 print("Finished extracting scores after elapsed time ({} seconds)"
