@@ -1,12 +1,12 @@
 # Code adapted from https://github.com/memsb/FaceDetection
-# - Pixelate
-# - Blur
+# - Pixelate (directly based on https://pyimagesearch.com/2020/04/06/blur-and-anonymize-faces-with-opencv-and-python/)
+# - Blur (OpenCV)
 #
 # Extending the anonymisation techniques with additional blurring options
 # available from https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html
-# - Bilateral
-# - Gaussian
-# - Median
+# - Bilateral (OpenCV)
+# - Gaussian (OpenCV)
+# - Median (OpenCV)
 
 import cv2
 import numpy as np
@@ -52,6 +52,7 @@ def anonymise_face(face_img, method):
     return cv2.bitwise_or(bk, fg)
 
 
+# See https://pyimagesearch.com/2020/04/06/blur-and-anonymize-faces-with-opencv-and-python/
 def pixelate_circle(original):
     pixelated = original.copy()
     (h, w) = original.shape[:2]
